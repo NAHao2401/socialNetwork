@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 
-const fs = require("fs");
-const path = require("path");
-const { promisify } = require("util");
+const fs = require("fs"); // Để thao tác với hệ thống tệp
+const path = require("path"); // Để xử lý đường dẫn tệp
+const { promisify } = require("util"); // Để chuyển đổi callback-based functions thành Promise-based
 
 const postSchema = new mongoose.Schema(
   {
