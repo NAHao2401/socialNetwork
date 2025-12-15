@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const suspiciousLoginSchema = new mongoose.Schema(
+const suspiciousLoginSchema = new mongoose.Schema( // Schema đăng nhập đáng ngờ
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,

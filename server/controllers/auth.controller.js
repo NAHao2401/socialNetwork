@@ -86,6 +86,7 @@ const addNewSuspiciousLogin = async (_id, existingUser, currentContextData) => {
 };
 
 const verifyContextData = async (req, existingUser) => {
+  // Xác minh dữ liệu thiết bị
   try {
     const { _id } = existingUser;
     const userContextDataRes = await UserContext.findOne({ user: _id });
@@ -260,4 +261,217 @@ const verifyContextData = async (req, existingUser) => {
   } catch (error) {
     return types.ERROR;
   }
+};
+
+const addContextData = async (req, res) => {
+  // Thêm dữ liệu thiết bị cho user lần đầu đăng nhập
+  const userId = req.userId;
+  const email = req.email;
+  const ip = req.ip || "unknown";
+  const location = geoip.lookup(ip) || "unknown";
+  const country = location.country ? location.country.toString() : "unknown";
+  const city = location.city ? location.city.toString() : "unknown";
+  const browser = req.useragent.browser
+    ? `${req.useragent.browser} ${req.useragent.version}`
+    : "unknown";
+  const platform = req.useragent.platform
+    ? req.useragent.platform.toString()
+    : "unknown";
+  const os = req.useragent.os ? req.useragent.os.toString() : "unknown";
+  const device = req.useragent.device
+    ? req.useragent.device.toString()
+    : "unknown";
+  const isMobile = req.useragent.isMobile || false;
+  const isDesktop = req.useragent.isDesktop || false;
+  const isTablet = req.useragent.isTablet || false;
+  const deviceType = isMobile
+    ? "Mobile"
+    : isDesktop
+    ? "Desktop"
+    : isTablet
+    ? "Tablet"
+    : "unknow";
+
+  const newUserContext = new UserContext({
+    user: userId,
+    email,
+    ip,
+    country,
+    city,
+    browser,
+    platform,
+    os,
+    device,
+    deviceType,
+  });
+
+  try {
+    await newUserContext.save();
+    res
+      .status(200)
+      .json({ message: "Email verificaton process was successful." });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+//GET /auth/context-data/primary
+const getAuthContextData = async (req, res) => {
+  try {
+    const result = await UserContext.findOne({ user: req.userId });
+    if (!result) {
+      return res.status(404).json({ message: "Not found" });
+    }
+
+    const userContextData = {
+      firstAdded: formatCreatedAt(result.createdAt),
+      ip: result.ip,
+      country: result.country,
+      city: result.city,
+      browser: result.browser,
+      platform: result.platform,
+      os: result.os,
+      device: result.device,
+      deviceType: result.deviceType,
+    };
+    res.status(200).json({ userContextData });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+//GET /auth/context-data/trusted
+const getTrustedAuthContextData = async (req, res) => {
+  try {
+    const result = await SuspiciousLogin.find({
+      user: req.userId,
+      isTrusted: true,
+      isBlocked: false,
+    });
+
+    const trustedAuthContextData = result.map((item) => {
+      return {
+        _id: item._id,
+        time: formatCreatedAt(item.createdAt),
+        ip: item.ip,
+        country: item.country,
+        city: item.city,
+        browser: item.browser,
+        platform: item.platform,
+        os: item.os,
+        device: item.device,
+        deviceType: item.deviceType,
+      };
+    });
+
+    res.status(200).json({ trustedAuthContextData });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+//GET /auth/context-data/blocked
+const getBlockedAuthContextData = async (req, res) => {
+  try {
+    const result = await SuspiciousLogin.find({
+      user: req.userId,
+      isBlocked: true,
+      isTrusted: false,
+    });
+
+    const blockedAuthContextData = result.map((item) => {
+      return {
+        _id: item._id,
+        time: formatCreatedAt(item.createdAt),
+        ip: item.ip,
+        country: item.country,
+        city: item.city,
+        browser: item.browser,
+        platform: item.platform,
+        os: item.os,
+        device: item.device,
+        deviceType: item.deviceType,
+      };
+    });
+
+    res.status(200).json({ blockedAuthContextData });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+//GET /aut/user-preferences
+const getUserPreferences = async (req, res) => {
+  try {
+    const userPreferences = await UserPreference.findOne({ user: req.userId });
+
+    if (!userPreferences) {
+      return res.status(404).json({ message: "Not found" });
+    }
+    res.status(200).json({ userPreferences });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+//DELETE /auth/context-data/:contextId
+const deleteContextData = async (req, res) => {
+  try {
+    const contextId = req.params.contextId;
+    await SuspiciousLogin.deleteOne({ _id: contextId });
+    res.status(200).json({ message: "Deleted successfully." });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+//PATCH /auth/context-data/block/:contextId
+const blockContextAuthData = async (req, res) => {
+  try {
+    const contextId = req.params.contextId;
+
+    await SuspiciousLogin.findOneAndUpdate(
+      { _id: contextId },
+      { $set: { isBlocked: true, isTrusted: false } },
+      { new: true }
+    );
+
+    res.status(200).json({
+      message: "Blocked successfully.",
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+//PATCH /auth/context-data/unblock/:contextId
+const unblockContextAuthData = async (req, res) => {
+  try {
+    const contextId = req.params.contextId;
+
+    await SuspiciousLogin.findOneAndUpdate(
+      { _id: contextId },
+      { $set: { isBlocked: false, isTrusted: true } },
+      { new: true }
+    );
+
+    res.status(200).json({
+      message: "Unblocked successfully.",
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error." });
+  }
+};
+
+module.exports = {
+  verifyContextData, // Xác minh dữ liệu thiết bị
+  addContextData, // Thêm dữ liệu thiết bị
+  getAuthContextData, // Lấy dữ liệu thiết bị chính
+  getUserPreferences, // Lấy tùy chọn người dùng
+  getTrustedAuthContextData, // Lấy dữ liệu thiết bị tin cậy
+  getBlockedAuthContextData, // Lấy dữ liệu thiết bị bị chặn
+  deleteContextData, // Xóa dữ liệu thiết bị
+  blockContextAuthData, // Chặn dữ liệu thiết bị
+  unblockContextAuthData, // Bỏ chặn dữ liệu thiết bị
+  types,
 };
