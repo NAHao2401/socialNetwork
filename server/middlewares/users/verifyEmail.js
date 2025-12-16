@@ -96,7 +96,7 @@ const verifyEmail = async (req, res, next) => {
     ).exec();
 
     await Promise.all([
-      EmailVerification.deleteMany({ email: { $eq: email } }).exec(),
+      EmailVerification.deleteMany({ email: { $eq: email } }).exec(), //Xoá tất cả mã xác nhận liên quan đến email này
       new UserPreference({
         user: updatedUser,
         enableContextBasedAuth: true,
