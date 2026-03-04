@@ -1,7 +1,13 @@
 require("dotenv").config();
 const express = require("express");
+const adminRoutes = require("./routes/admin.route");
+const userRoutes = require("./routes/user.route");
+const postRoutes = require("./routes/post.route");
+const communityRoutes = require("./routes/community.route");
 const contextAuthRoutes = require("./routes/context-auth.route");
+const search = require("./controllers/search.controller");
 const Database = require("./config/database");
+const decodeToken = require("./middlewares/auth/decodeToken");
 
 const app = express();
 
@@ -11,13 +17,10 @@ const passport = require("passport");
 
 const PORT = process.env.PORT || 4000;
 
-const db = new Database(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+const db = new Database(process.env.MONGODB_URI);
 
 db.connect().catch((err) =>
-  console.error("Error connecting to database:", err)
+  console.error("Error connecting to database:", err),
 );
 
 app.use(cors());
@@ -25,7 +28,7 @@ app.use(morgan("dev"));
 app.use("/assets/userFiles", express.static(__dirname + "/assets/userFiles"));
 app.use(
   "/assets/userAvatars",
-  express.static(__dirname + "/assets/userAvatars")
+  express.static(__dirname + "/assets/userAvatars"),
 );
 
 app.use(express.json());
@@ -37,7 +40,13 @@ app.get("/server-status", (req, res) => {
   res.status(200).json({ message: "Server is up and running!" });
 });
 
+app.get("/search", decodeToken, search);
+
 app.use("/auth", contextAuthRoutes);
+app.use("/users", userRoutes);
+app.use("/posts", postRoutes);
+app.use("/communities", communityRoutes);
+app.use("/admin", adminRoutes);
 
 process.on("SIGINT", async () => {
   try {

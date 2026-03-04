@@ -7,13 +7,12 @@ const passport = require("passport"); // Đăng ký strategy
 const opts = {}; // Config cho strategy
 const jwt = require("jsonwebtoken");
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken(); // Lấy token từ header
-opts.secretOrKey = process.env.JWT_SECRET; // Secret để decode token
+opts.secretOrKey = process.env.SECRET; // Secret để decode token
 
 passport.use(
   new JwtStrategy(opts, async function (jwt_payload, done) {
     try {
       const user = await User.findOne({ email: jwt_payload.email });
-
       if (user) {
         const refreshTokenFromDB = await Token.findOne({
           user: user._id,
@@ -25,7 +24,7 @@ passport.use(
 
         const refreshPayload = jwt.verify(
           refreshTokenFromDB.refreshToken,
-          process.env.REFRESH_SECRET
+          process.env.REFRESH_SECRET,
         );
 
         if (refreshPayload.email !== jwt_payload.email) {
@@ -55,5 +54,5 @@ passport.use(
     } catch (err) {
       return done(err, false);
     }
-  })
+  }),
 );
