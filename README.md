@@ -1,62 +1,126 @@
-# 🌐 Social Network
+# Social Network
 
-> Ứng dụng mạng xã hội đơn giản cho phép người dùng kết nối, chia sẻ và tương tác.
+A full-stack social networking web application that allows users to create accounts, manage profiles, share posts, interact with other users, and engage through likes and comments.
 
----
-
-## 📌 Giới thiệu
-
-**Social Network** là một dự án fullstack mô phỏng mạng xã hội (giống Facebook mini), giúp người dùng:
-
-* Đăng ký / đăng nhập tài khoản
-* Tạo và quản lý bài viết
-* Tương tác với người dùng khác
-
-Dự án được xây dựng nhằm mục đích học tập và thực hành phát triển web fullstack.
+This project was built as a personal full-stack project to practice modern web development, RESTful API design, authentication, database modeling, and frontend-backend integration.
 
 ---
 
-## 🚀 Tính năng
+## Introduction
 
-* 👤 Đăng ký, đăng nhập người dùng
-* 📝 Tạo / sửa / xoá bài viết
-* ❤️ Like / 💬 Comment bài viết
-* 🧑‍🤝‍🧑 Kết nối người dùng (friend / follow)
-* 📄 Trang cá nhân
+**Social Network** is a mini social networking platform inspired by common social media applications. The application provides core features such as user authentication, post management, likes, comments, profile management, and media upload.
+
+The main purpose of this project is to improve my full-stack development skills, especially in backend development with **Node.js, Express.js, MongoDB, RESTful APIs, authentication, authorization, and frontend integration with React**.
 
 ---
 
-## 🛠️ Công nghệ sử dụng
+## Features
 
-* **Frontend:** (client)
+### Authentication & Authorization
 
-  * HTML / CSS / JavaScript
-* **Backend:** (server)
+- User registration and login
+- JWT-based authentication
+- Password hashing with bcrypt
+- Protected routes for authenticated users
+- User session handling on the client side
 
-  * Node.js / Express
-* **Database:**
+### User Features
 
-  * MongoDB / MySQL (tuỳ project)
-* **Khác:**
+- View and update user profile
+- Upload user avatar or media files
+- View other users' profiles
+- Manage personal information
 
-  * REST API
-  * JWT Authentication
+### Post Features
+
+- Create new posts
+- View posts
+- Edit and delete own posts
+- Upload images for posts
+- Like and unlike posts
+- Comment on posts
+
+### Social Interaction
+
+- Interact with posts through likes and comments
+- View user-related content
+- Basic social networking flow between users
+
+### Frontend Features
+
+- Responsive user interface
+- Client-side routing
+- State management with Redux Toolkit
+- API integration using Axios
+- Loading and error handling
 
 ---
 
-## 📁 Cấu trúc project
+## Tech Stack
 
-```bash id="qv3s7c"
+### Frontend
+
+- ReactJS
+- Vite
+- JavaScript
+- Redux Toolkit
+- React Redux
+- React Router DOM
+- Axios
+- Tailwind CSS
+- React Icons
+- React Spinners
+- React Photo View
+
+### Backend
+
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JSON Web Token
+- Passport JWT
+- bcrypt
+- Multer
+- Nodemailer
+- Express Validator
+- CORS
+- Morgan
+- dotenv
+
+### Tools
+
+- Git
+- GitHub
+- VS Code
+- npm
+- Insomnia
+
+---
+
+## Project Structure
+
+```bash
 socialNetwork/
-│── client/        # Frontend
-│── server/        # Backend
-│── resources/     # Tài nguyên (images, docs...)
-│── README.md
+│
+├── client/                 # Frontend source code
+│   ├── src/                # React application source
+│   ├── public/             # Public assets
+│   ├── package.json        # Frontend dependencies and scripts
+│   └── vite.config.js      # Vite configuration
+│
+├── server/                 # Backend source code
+│   ├── app.js              # Main server entry point
+│   ├── package.json        # Backend dependencies and scripts
+│   └── ...                 # Routes, controllers, models, middlewares
+│
+├── resources/              # Project resources
+│
+├── .gitignore
+└── README.md
 ```
 
----
-
-## ⚙️ Cài đặt
+### ⚙️ Cài đặt
 
 ```bash id="3n1w2a"
 # Clone project
