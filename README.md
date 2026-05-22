@@ -21,7 +21,7 @@ Dự án được xây dựng nhằm mục đích học tập và thực hành p
 * 👤 Đăng ký, đăng nhập người dùng
 * 📝 Tạo / sửa / xoá bài viết
 * ❤️ Like / 💬 Comment bài viết
-* 🧑‍🤝‍🧑 Kết nối người dùng (friend / follow – nếu có)
+* 🧑‍🤝‍🧑 Kết nối người dùng (friend / follow)
 * 📄 Trang cá nhân
 
 ---
@@ -30,7 +30,7 @@ Dự án được xây dựng nhằm mục đích học tập và thực hành p
 
 * **Frontend:** (client)
 
-  * HTML / CSS / JavaScript / (React nếu có)
+  * HTML / CSS / JavaScript
 * **Backend:** (server)
 
   * Node.js / Express
@@ -40,7 +40,7 @@ Dự án được xây dựng nhằm mục đích học tập và thực hành p
 * **Khác:**
 
   * REST API
-  * JWT Authentication (nếu có)
+  * JWT Authentication
 
 ---
 
@@ -105,7 +105,7 @@ http://localhost:3000
 
 ---
 
-## 📌 API (ví dụ)
+## 📌 API
 
 | Method | Endpoint      | Mô tả        |
 | ------ | ------------- | ------------ |
@@ -125,8 +125,7 @@ http://localhost:3000
 5. Tạo Pull Request
 
 ---
-
-## ⭐ Ủng hộ
-
-Nếu bạn thấy project hữu ích, hãy ⭐ repo nhé!
-
+👨‍💻 Tác giả
+```
+Nguyễn Anh Hào
+📧 Email: nahao2401@gmail.com
